@@ -1,0 +1,24 @@
+{
+  "name": "tper",
+  "version": "1.0.0",
+  "description": "Intersteno の TP の課題っぽい PDF を作るやつ",
+  "main": "html2canvas.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nohtaray/tper.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nohtaray/tper/issues"
+  },
+  "homepage": "https://github.com/nohtaray/tper#readme",
+  "dependencies": {
+    "html2canvas": "^0.5.0-beta4",
+    "jsdom": "^11.1.0"
+  }
+}
