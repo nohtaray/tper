@@ -72,6 +72,7 @@
   <script type="text/javascript">
     document.querySelector('.btn-generate').onclick = function() {
       var originalText = document.querySelector('.original-text').value;
+      if (originalText.length === 0) return;
 
       // テキストを行ごとに分割する
       // 67 = 1行の最大文字数
