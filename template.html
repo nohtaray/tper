@@ -1,18 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title></title>
+  <title>tper</title>
   <style type="text/css">
     body {
       padding: 0;
       margin: 0;
-      background-color: black;
+      text-align: center;
     }
     p {
       margin: 0 0 16px 0;
     }
+    .original-text {
+      width: 400px;
+      height: 400px;
+    }
+    .paper-wrapper {
+      position: relative;
+    }
     .paper {
       background-color: white;
+      text-align: left;
       height: 1134px;
       width: 792px;
 
@@ -22,7 +30,7 @@
       font-family: "Courier New", monospace;
       font-size: 16px;
       line-height: 1.45;
-      width: 640px;
+      width: 660px;
 
       position: absolute;
       top: 80px;
@@ -36,7 +44,7 @@
       bottom: 50px;
       left: 56px;
     }
-    .page {
+    .page-number {
       font-family: "Helvetica", monospace;
       font-size: 96px;
 
@@ -49,77 +57,61 @@
   <script src="jspdf.min.js" type="text/javascript"></script>
 </head>
 <body>
-  <div class="paper">
+  <h1>tper</h1>
+  <textarea class="original-text" placeholder="Copy and paste your text here."></textarea><br>
+  <button class="btn-generate">Generate</button>
 
-    <div class="text">
-      <p>
-        Europe is currently at a turning point in its history. We will
-        only overcome the challenges which lie ahead if all of us if
-        politicians, citizens, employers and employees are able to pull
-        together with a new common purpose defined by the needs of the
-        current age. Unfortunately, the financial crisis, which was the
-      </p>
-      <p>
-        result of shortcomings in the functioning and supervision of our
-        financial institutions, is still with us today. At this crucial
-        juncture, the European Union needs to act decisively and together.
-        This crisis, whose origins lie on the other side of the Atlantic,
-        has affected Europe more than any other region of the world by
-      </p>
-      <p>
-        result of shortcomings in the functioning and supervision of our
-        financial institutions, is still with us today. At this crucial
-        juncture, the European Union needs to act decisively and together.
-        This crisis, whose origins lie on the other side of the Atlantic,
-        has affected Europe more than any other region of the world by
-      </p>
-      <p>
-        result of shortcomings in the functioning and supervision of our
-        financial institutions, is still with us today. At this crucial
-        juncture, the European Union needs to act decisively and together.
-        This crisis, whose origins lie on the other side of the Atlantic,
-        has affected Europe more than any other region of the world by
-      </p>
-      <p>
-        result of shortcomings in the functioning and supervision of our
-        financial institutions, is still with us today. At this crucial
-        juncture, the European Union needs to act decisively and together.
-        This crisis, whose origins lie on the other side of the Atlantic,
-        has affected Europe more than any other region of the world by
-      </p>
-      <p>
-        result of shortcomings in the functioning and supervision of our
-        financial institutions, is still with us today. At this crucial
-        juncture, the European Union needs to act decisively and together.
-        This crisis, whose origins lie on the other side of the Atlantic,
-        has affected Europe more than any other region of the world by
-      </p>
-      <p>
-        twice as many people over 65 per worker as today, European Union
-        Member States will have to make considerable efforts to finance
-        their social support regimes and to retain older people in the
-        workforce. As the domestic supply of labour and skills declines,
-        Europe will need to attract more migrant workers, with
-      </p>
-    </div>
-    <div class="footer">Budapest 2015 – Text production – EN</div>
-    <div class="page">
-      4
+  <div class="paper-wrapper">
+    <div class="paper">
+      <div class="text"></div>
+      <div class="footer">Japan 2019 – Text production – EN</div>
+      <div class="page-number"></div>
     </div>
   </div>
+
   <script type="text/javascript">
-    var paper = document.querySelector('.paper');
-    html2canvas(paper, {
-      onrendered: function(canvas) {
-        //        new jsPDF(<縦or横>, <サイズ単位>)
-        var doc = new jsPDF('portrait', 'pt');
-        doc.addImage(canvas, 'PNG', 0, 0);
-        doc.addPage();
-        doc.addImage(canvas, 'PNG', 0, 0);
-        doc.save();
-        window.doc = doc;
-      }
-    });
+    document.querySelector('.btn-generate').onclick = function() {
+      var originalText = document.querySelector('.original-text').value;
+
+      // テキストを行ごとに分割する
+      // 67 = 1行の最大文字数
+      var rows = originalText.match(/[^\r\n]{1,67}[^0-9A-Za-z\-]/g);
+
+      var page = 1;
+      var paper = document.querySelector('.paper');
+      //        new jsPDF(縦or横,      サイズ単位, [width, height ])
+      var doc = new jsPDF('portrait', 'mm',      [792,   1134   ]);
+
+      var renderPdf = function() {
+        var text = document.querySelector('.text');
+        text.innerHTML = '';
+        for (var i = 0; i < 7; i++) {
+          var p = document.createElement('p');
+          // js 実行できちゃう
+          p.innerHTML = rows.slice(0, 5).join('<br>');
+          text.appendChild(p);
+
+          for (var j = 0; j < 5; j++) rows.shift();
+        }
+        document.querySelector('.page-number').textContent = page;
+
+        html2canvas(paper, {
+          onrendered: function(canvas) {
+            //  addImage(canvas, 'PNG', x, y, width, height)
+            doc.addImage(canvas, 'PNG', 0, 0, 792,   1134  ); // 紙のサイズと合わせないとずれてく
+            if (rows.length > 0 && page++ < 1000) { // 無限ループ防止
+              doc.addPage();
+              renderPdf();
+            } else {
+              doc.save();
+            }
+          }
+        });
+      };
+
+      renderPdf();
+    };
+
   </script>
 
 </body>
