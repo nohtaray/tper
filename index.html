@@ -95,7 +95,7 @@
 
       // テキストを行ごとに分割する
       // 67 = 1行の最大文字数
-      var rows = originalText.match(/[^\r\n]{1,67}([^0-9A-Za-z\-]|$)/g);
+      var rows = originalText.match(/[^\r\n]{1,67}[\.,]?(\s|$)/g);
 
       //        new jsPDF(縦or横,      サイズ単位, [width, height ])
       var doc = new jsPDF('portrait', 'mm',      [1584,  2268   ]);
