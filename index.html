@@ -97,12 +97,11 @@
       // 67 = 1行の最大文字数
       var rows = originalText.match(/[^\r\n]{1,67}([^0-9A-Za-z\-]|$)/g);
 
-      var page = 1;
-      var paper = document.querySelector('.paper');
       //        new jsPDF(縦or横,      サイズ単位, [width, height ])
       var doc = new jsPDF('portrait', 'mm',      [1584,  2268   ]);
+      var page = 1;
 
-      var renderPdf = function() {
+      var renderPage = function() {
         var text = document.querySelector('.text');
         text.innerHTML = '';
         for (var i = 0; i < 7; i++) {
@@ -115,13 +114,13 @@
         }
         document.querySelector('.page-number').textContent = page;
 
-        html2canvas(paper, {
+        html2canvas(document.querySelector('.paper'), {
           onrendered: function(canvas) {
             //                                                   x, y, width, height)
             doc.addImage(canvas.toDataURL('image/jpeg'), 'JPEG', 0, 0, 1584,  2268  ); // 紙のサイズと合わせないとずれてく
             if (rows.length > 0 && page++ < 1000) { // 無限ループ防止
               doc.addPage();
-              renderPdf();
+              renderPage();
             } else {
               doc.save();
             }
@@ -129,7 +128,7 @@
         });
       };
 
-      renderPdf();
+      renderPage();
     };
 
   </script>
